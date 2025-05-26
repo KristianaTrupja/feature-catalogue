@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ChevronDown } from "lucide-react";
 import { useFormContext } from "../../context/FormContext";
 
@@ -8,15 +8,42 @@ interface ClassificationStepProps {
   setStepValid: (valid: boolean) => void;
 }
 
-const customerProjectOptions = [
-  { label: "Select a project", value: "" },
-  { label: "Faber Castel", value: "faber-castel" },
-  { label: "Nivea", value: "nivea" },
-  { label: "Eucerin", value: "eucerin" },
-];
+interface CustomerProjectOption {
+  label: string;
+  value: string;
+}
 
 export default function ClassificationStep({ setStepValid }: ClassificationStepProps) {
   const { data, updateField } = useFormContext();
+  const [options, setOptions] = useState<CustomerProjectOption[]>([
+    { label: "Loading...", value: "" },
+  ]);
+
+  useEffect(() => {
+    // Use environment variable for API base URL
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+console.log("Base URL:", baseUrl);
+    const fetchCustomerProjects = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/Customer/GetAllCustomers`);
+        if (!res.ok) {
+          throw new Error(`HTTP error ${res.status}`);
+        }
+
+        const result: { id: number; name: string }[] = await res.json();
+        const formatted = result.map(item => ({
+          label: item.name,
+          value: item.id.toString(),
+        }));
+        setOptions([{ label: "Select a project", value: "" }, ...formatted]);
+      } catch (err) {
+        console.error("Failed to load projects", err);
+        setOptions([{ label: "Failed to load", value: "" }]);
+      }
+    };
+
+    fetchCustomerProjects();
+  }, []);
 
   useEffect(() => {
     setStepValid(!!data.customerProject.trim());
@@ -61,7 +88,7 @@ export default function ClassificationStep({ setStepValid }: ClassificationStepP
                   onChange={handleSelectChange}
                   className="appearance-none text-lg w-full border-2 px-3 pr-12 py-4 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 >
-                  {customerProjectOptions.map(({ label, value }) => (
+                  {options.map(({ label, value }) => (
                     <option key={value} value={value}>
                       {label}
                     </option>
