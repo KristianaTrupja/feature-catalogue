@@ -73,7 +73,7 @@ developer.`
 
   return (
     <div className="p-10 pb-20 bg-gray-200 h-full">
-      <div className="container w-3/4 space-y-8 p-10">
+      <div className="container w-3/4 space-y-8 py-10">
         {/* Headline */}
         <h1 className="text-3xl font-bold">Description of the feature</h1>
 

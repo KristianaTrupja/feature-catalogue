@@ -46,7 +46,7 @@ export default function DescriptionStep({
       className="h-full bg-cover bg-bottom bg-no-repeat bg-gray-200"
       style={{ backgroundImage: "url('/images/first-step-background-image.png')" }}
     >
-      <div className="w-full lg:w-3/4 2xl:w-1/2 p-10 2xl:py-14 lg:ml-40 2xl:ml-80">
+      <div className="w-full lg:w-3/4 2xl:w-1/2 p-10 py-14 lg:ml-40 2xl:ml-80">
         <div className="bg-white border-4 border-gray-200 rounded-3xl p-6 lg:p-8 2xl:p-14 shadow-xl space-y-6">
           <h2 className="text-2xl xl:text-4xl font-bold">Description of the module</h2>
 
