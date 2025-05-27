@@ -1,9 +1,12 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { Card } from "../ui/Card";
 import { Button } from "../ui/button";
 import { Edit, Check, X } from "lucide-react";
 import { toast } from "sonner";
 import { useFormContext } from "@/app/context/FormContext";
+import { EstimationData } from "@/app/types/Estimations";
 
 const featureExamples = [
   {
@@ -25,12 +28,6 @@ const featureExamples = [
   },
 ];
 
-const mockTitles = [
-  "How AI is Revolutionizing Skincare",
-  "The Science Behind Eucerin’s Innovation",
-  "Nivea's Next Big Feature",
-];
-
 interface GenerateFeatureProps {
   onNext: () => void;
   setStepValid: (valid: boolean) => void;
@@ -50,8 +47,9 @@ developer.`
   );
   const [isEditing, setIsEditing] = useState(false);
   const [tempDescription, setTempDescription] = useState(description);
-  const [estimations, setEstimations] = useState<any[]>([]);
-   const { data, updateField } = useFormContext();
+  const [estimation, setEstimation] = useState<EstimationData | null>(null);
+
+  const { data, updateField } = useFormContext();
 
   const toggleFeature = (title: string) => {
     setSelectedFeatures((prev) =>
@@ -62,7 +60,6 @@ developer.`
   const handleSave = () => {
     setDescription(tempDescription.trim());
     setIsEditing(false);
-    
   };
 
   const handleCancel = () => {
@@ -74,29 +71,32 @@ developer.`
     setStepValid(true);
     onNext();
   };
+
   useEffect(() => {
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
-    const fetchEstimations = async () => {
+    const fetchEstimation = async () => {
       try {
         if (!data || !data.estimationId) {
           throw new Error("Estimation ID is missing");
         }
-        const response = await fetch(`${baseUrl}/AiEstimation/AiEstimation/${data.estimationId}`);
+        const response = await fetch(
+          `${baseUrl}/AiEstimation/AiEstimation/${data.estimationId}`
+        );
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         const fetchedData = await response.json();
-        setEstimations(fetchedData);
+        setEstimation(fetchedData);
       } catch (err: any) {
-        toast.error(err.message || "Failed to fetch estimations");
+        toast.error(err.message || "Failed to fetch estimation");
       }
     };
-  
+
     if (data) {
-      fetchEstimations();
+      fetchEstimation();
     }
   }, [data]);
-  console.log("Estimations:", estimations);
+
   return (
     <div className="p-10 pb-20 bg-gray-200 h-full">
       <div className="container w-3/4 space-y-8 py-10">
@@ -149,20 +149,23 @@ developer.`
         </div>
 
         {/* Generated Titles */}
-        <div>
-          <h2 className="text-xl font-semibold mb-2">Generated Titles</h2>
-          <ul className="list-disc list-inside space-y-1">
-            {mockTitles.map((title, index) => (
-              <li key={index} className="text-gray-800">
-                {title}
-              </li>
-            ))}
-          </ul>
-        </div>
+        {estimation && (estimation.suggestedNames?.length ?? 0) > 0 && (
+          <div>
+            <h2 className="text-xl font-semibold mb-2">Generated Titles</h2>
+            <ul className="list-disc list-inside space-y-1">
+              {estimation.suggestedNames.map((title, index) => (
+                <li key={index} className="text-gray-800">
+                  {title}
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
 
         {/* Feature Cards */}
+        {estimation && (estimation.realEstimations?.length ?? 0) > 0 && (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-          {featureExamples.map(({ title, description }) => (
+        {estimation.realEstimations.map(({ title, description }) => (
             <Card
               key={title}
               title={title}
@@ -173,7 +176,9 @@ developer.`
             />
           ))}
         </div>
+        )}
 
+        {/* Feature Examples */}
         {/* Generate Button */}
         <Button onClick={handleGenerateEstimation}>Generate estimation</Button>
       </div>
