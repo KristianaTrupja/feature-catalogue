@@ -1,5 +1,11 @@
 "use client";
-import React, { createContext, useContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useContext,
+  useState,
+  useEffect,
+  ReactNode,
+} from "react";
 
 interface FormData {
   customerId?: string;
@@ -14,6 +20,8 @@ interface FormContextProps {
   resetForm: () => void;
 }
 
+const LOCAL_STORAGE_KEY = "formData";
+
 const FormContext = createContext<FormContextProps | undefined>(undefined);
 
 export const FormProvider = ({ children }: { children: ReactNode }) => {
@@ -21,8 +29,27 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
     customerId: "",
     description: "",
     file: undefined,
-    estimationId: ""
+    estimationId: "",
   });
+
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      const stored = localStorage.getItem(LOCAL_STORAGE_KEY);
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        setData((prev) => ({
+          ...prev,
+          ...parsed,
+          file: undefined,
+        }));
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    const { file, ...persistable } = data;
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(persistable));
+  }, [data]);
 
   const updateField = (field: keyof FormData, value: string | File) => {
     setData((prev) => ({
@@ -32,12 +59,14 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const resetForm = () => {
-    setData({
+    const reset = {
       customerId: "",
       description: "",
       file: undefined,
-      estimationId:""
-    });
+      estimationId: "",
+    };
+    setData(reset);
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
   };
 
   return (
