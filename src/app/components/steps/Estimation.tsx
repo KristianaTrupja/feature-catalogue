@@ -1,38 +1,50 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { exportToExcel } from "@/app/utils/exportToExel";
-
-const estimationData = [
-  {
-    category: "Module A",
-    description: "Basic implementation with standard features.",
-    dev: "5 days",
-    pm: "2 days",
-    qa: "3 days",
-    total: "2 weeks",
-  },
-  {
-    category: "Module B",
-    description: "Includes advanced customization and integrations.",
-    dev: "15 days",
-    pm: "3 days",
-    qa: "5 days",
-    total: "1 month",
-  },
-  {
-    category: "Module C",
-    description: "Minor feature update and bug fixes.",
-    dev: "1 day",
-    pm: "1 day",
-    qa: "1 day",
-    total: "3 days",
-  },
-];
+import { EstimationData } from "@/app/types/Estimations";
+import { useFormContext } from "@/app/context/FormContext";
+import { toast } from "sonner";
 
 export default function Estimation() {
+  const [estimation, setEstimation] = useState<EstimationData | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { data } = useFormContext();
+
   const handleDownload = () => {
-    exportToExcel(estimationData, "my-project-data");
+    if (!estimation?.realEstimations) {
+      toast.error("No data to export");
+      return;
+    }
+    exportToExcel(estimation.realEstimations, "my-project-data");
   };
+
+  useEffect(() => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+    const fetchEstimation = async () => {
+      try {
+        setLoading(true);
+        if (!data || !data.estimationId) {
+          throw new Error("Estimation ID is missing");
+        }
+        const response = await fetch(
+          `${baseUrl}/AiEstimation/AiEstimation/${data.estimationId}`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const fetchedData = await response.json();
+        setEstimation(fetchedData);
+      } catch (err: any) {
+        toast.error(err.message || "Failed to fetch estimation");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (data) {
+      fetchEstimation();
+    }
+  }, [data]);
 
   return (
     <div className="mt-10 bg-gray-200">
@@ -44,32 +56,46 @@ export default function Estimation() {
             <tr className="bg-gray-100">
               <th className="border border-gray-300 px-4 py-2 text-left">Category</th>
               <th className="border border-gray-300 px-4 py-2 text-left">Description</th>
-              <th className="border border-gray-300 px-4 py-2 text-left">Dev</th>
-              <th className="border border-gray-300 px-4 py-2 text-left">PM</th>
-              <th className="border border-gray-300 px-4 py-2 text-left">QA</th>
               <th className="border border-gray-300 px-4 py-2 text-left">Total estimation</th>
             </tr>
           </thead>
-          <tbody>
-            {estimationData.map(
-              ({ category, description, dev, pm, qa, total }, index) => (
-                <tr
-                  key={index}
-                  className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                >
-                  <td className="border border-gray-300 px-4 py-2">{category}</td>
-                  <td className="border border-gray-300 px-4 py-2">{description}</td>
-                  <td className="border border-gray-300 px-4 py-2">{dev}</td>
-                  <td className="border border-gray-300 px-4 py-2">{pm}</td>
-                  <td className="border border-gray-300 px-4 py-2">{qa}</td>
-                  <td className="border border-gray-300 px-4 py-2">{total}</td>
-                </tr>
-              )
-            )}
-          </tbody>
+          {loading ? (
+            <tbody>
+              <tr>
+                <td colSpan={3} className="text-center py-6">
+                  Loading estimations...
+                </td>
+              </tr>
+            </tbody>
+          ) : estimation?.realEstimations?.length ? (
+            <tbody>
+              {estimation.realEstimations.map(
+                ({ title, description, estimatedHours }, index) => (
+                  <tr
+                    key={index}
+                    className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
+                  >
+                    <td className="border border-gray-300 px-4 py-2">{title}</td>
+                    <td className="border border-gray-300 px-4 py-2">{description}</td>
+                    <td className="border border-gray-300 px-4 py-2">{estimatedHours}</td>
+                  </tr>
+                )
+              )}
+            </tbody>
+          ) : (
+            <tbody>
+              <tr>
+                <td colSpan={3} className="text-center py-6">
+                  No estimations available.
+                </td>
+              </tr>
+            </tbody>
+          )}
         </table>
 
-        <Button onClick={handleDownload}>Download Excel</Button>
+        <Button onClick={handleDownload} disabled={loading || !estimation}>
+          Download Excel
+        </Button>
       </div>
     </div>
   );
