@@ -34,8 +34,8 @@ export default function DescriptionStep({
   
     try {
       const customerId = data.customerId || "defaultCustomerId";
-  console.log(customerId,trimmedDescription,"customerId, description");
-      // 1. First, submit the description
+  
+      // Step 1: Send description data
       const response = await fetch(`${baseUrl}/AiEstimation/CreateAiEstimation`, {
         method: "POST",
         headers: {
@@ -53,16 +53,11 @@ export default function DescriptionStep({
         return;
       }
   
-      // 2. If description POST succeeds, update the form data
-      updateField("description", trimmedDescription);
-  
+      // Step 2: Upload file if available
       const file = fileInputRef.current?.files?.[0];
-  
-      // 3. Upload the file (if available)
       if (file) {
         const formData = new FormData();
         formData.append("file", file);
-        formData.append("customerId", customerId);
   
         const uploadResponse = await fetch(`${baseUrl}/api/File/UploadEstimationExel`, {
           method: "POST",
@@ -78,6 +73,8 @@ export default function DescriptionStep({
         updateField("file", file);
       }
   
+      // Step 3: Finalize
+      updateField("description", trimmedDescription);
       toast.success("Form submitted!");
       onNext();
     } catch (error) {
@@ -85,6 +82,7 @@ export default function DescriptionStep({
       console.error("Submission error:", error);
     }
   };
+  
   
 
   return (

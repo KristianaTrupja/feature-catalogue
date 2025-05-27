@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "../ui/Card";
 import { Button } from "../ui/button";
 import { Edit, Check, X } from "lucide-react";
+import { toast } from "sonner";
 
 const featureExamples = [
   {
@@ -48,6 +49,7 @@ developer.`
   );
   const [isEditing, setIsEditing] = useState(false);
   const [tempDescription, setTempDescription] = useState(description);
+  const [estimations, setEstimations] = useState<any[]>([]);
 
   const toggleFeature = (title: string) => {
     setSelectedFeatures((prev) =>
@@ -70,7 +72,24 @@ developer.`
     setStepValid(true);
     onNext();
   };
-
+  useEffect(() => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+    const fetchEstimations = async () => {
+      try {
+        const response = await fetch(`${baseUrl}/AiEstimation/AiEstimations`);
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        setEstimations(data);
+      } catch (err: any) {
+        toast.error(err.message || "Failed to fetch estimations");
+      }
+    };
+  
+    fetchEstimations();
+  }, []);
+  console.log("Estimations:", estimations);
   return (
     <div className="p-10 pb-20 bg-gray-200 h-full">
       <div className="container w-3/4 space-y-8 py-10">
