@@ -2,9 +2,10 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface FormData {
-  customerId: string;
-  description: string;
+  customerId?: string;
+  description?: string;
   file?: File;
+  estimationId: string;
 }
 
 interface FormContextProps {
@@ -20,6 +21,7 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
     customerId: "",
     description: "",
     file: undefined,
+    estimationId: ""
   });
 
   const updateField = (field: keyof FormData, value: string | File) => {
@@ -34,6 +36,7 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
       customerId: "",
       description: "",
       file: undefined,
+      estimationId:""
     });
   };
 

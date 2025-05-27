@@ -47,7 +47,7 @@ console.log("Env var at top level:", process.env.NEXT_PUBLIC_API_BASE_URL);
   }, []);
 
   useEffect(() => {
-    setStepValid(!!data.customerId.trim());
+    setStepValid(!!(data.customerId ?? "").trim());
   }, [data.customerId, setStepValid]);
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {

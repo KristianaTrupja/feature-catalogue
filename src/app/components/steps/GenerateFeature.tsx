@@ -3,6 +3,7 @@ import { Card } from "../ui/Card";
 import { Button } from "../ui/button";
 import { Edit, Check, X } from "lucide-react";
 import { toast } from "sonner";
+import { useFormContext } from "@/app/context/FormContext";
 
 const featureExamples = [
   {
@@ -50,6 +51,7 @@ developer.`
   const [isEditing, setIsEditing] = useState(false);
   const [tempDescription, setTempDescription] = useState(description);
   const [estimations, setEstimations] = useState<any[]>([]);
+   const { data, updateField } = useFormContext();
 
   const toggleFeature = (title: string) => {
     setSelectedFeatures((prev) =>
@@ -76,19 +78,24 @@ developer.`
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
     const fetchEstimations = async () => {
       try {
-        const response = await fetch(`${baseUrl}/AiEstimation/AiEstimation/{id}`);
+        if (!data || !data.estimationId) {
+          throw new Error("Estimation ID is missing");
+        }
+        const response = await fetch(`${baseUrl}/AiEstimation/AiEstimation/${data.estimationId}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
-        const data = await response.json();
-        setEstimations(data);
+        const fetchedData = await response.json();
+        setEstimations(fetchedData);
       } catch (err: any) {
         toast.error(err.message || "Failed to fetch estimations");
       }
     };
   
-    fetchEstimations();
-  }, []);
+    if (data) {
+      fetchEstimations();
+    }
+  }, [data]);
   console.log("Estimations:", estimations);
   return (
     <div className="p-10 pb-20 bg-gray-200 h-full">
