@@ -2,7 +2,7 @@
 import React, { createContext, useContext, useState, ReactNode } from "react";
 
 interface FormData {
-  customerProject: string;
+  customerId: string;
   description: string;
   file?: File;
 }
@@ -17,7 +17,7 @@ const FormContext = createContext<FormContextProps | undefined>(undefined);
 
 export const FormProvider = ({ children }: { children: ReactNode }) => {
   const [data, setData] = useState<FormData>({
-    customerProject: "",
+    customerId: "",
     description: "",
     file: undefined,
   });
@@ -31,7 +31,7 @@ export const FormProvider = ({ children }: { children: ReactNode }) => {
 
   const resetForm = () => {
     setData({
-      customerProject: "",
+      customerId: "",
       description: "",
       file: undefined,
     });

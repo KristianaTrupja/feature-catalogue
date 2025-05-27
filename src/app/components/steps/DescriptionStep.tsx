@@ -23,23 +23,69 @@ export default function DescriptionStep({
     setStepValid(!!description.trim());
   }, [description, setStepValid]);
 
-  const handleGenerate = () => {
+  const handleGenerate = async () => {
     const trimmedDescription = description.trim();
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+  
     if (!trimmedDescription) {
       toast.error("Please provide a description before proceeding.");
       return;
     }
-
-    updateField("description", trimmedDescription);
-
-    const file = fileInputRef.current?.files?.[0];
-    if (file) {
-      updateField("file", file);
+  
+    try {
+      const customerId = data.customerId || "defaultCustomerId";
+  
+      // 1. First, submit the description
+      const response = await fetch(`${baseUrl}/AiEstimation/CreateAiEstimation`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          customerId,
+          description: trimmedDescription,
+        }),
+      });
+  
+      if (!response.ok) {
+        const errorData = await response.json();
+        toast.error(`Error: ${errorData.message || response.statusText}`);
+        return;
+      }
+  
+      // 2. If description POST succeeds, update the form data
+      updateField("description", trimmedDescription);
+  
+      const file = fileInputRef.current?.files?.[0];
+  
+      // 3. Upload the file (if available)
+      if (file) {
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("customerId", customerId);
+  
+        const uploadResponse = await fetch(`${baseUrl}/api/File/UploadEstimationExel`, {
+          method: "POST",
+          body: formData,
+        });
+  
+        if (!uploadResponse.ok) {
+          const uploadError = await uploadResponse.json();
+          toast.error(`File upload failed: ${uploadError.message || uploadResponse.statusText}`);
+          return;
+        }
+  
+        updateField("file", file);
+      }
+  
+      toast.success("Form submitted!");
+      onNext();
+    } catch (error) {
+      toast.error("Failed to submit estimation request.");
+      console.error("Submission error:", error);
     }
-
-    toast.success("Form submitted!");
-    onNext();
   };
+  
 
   return (
     <div

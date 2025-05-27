@@ -47,12 +47,12 @@ console.log("Env var at top level:", process.env.NEXT_PUBLIC_API_BASE_URL);
   }, []);
 
   useEffect(() => {
-    setStepValid(!!data.customerProject.trim());
-  }, [data.customerProject, setStepValid]);
+    setStepValid(!!data.customerId.trim());
+  }, [data.customerId, setStepValid]);
 
   const handleSelectChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedValue = e.target.value;
-    updateField("customerProject", selectedValue);
+    updateField("customerId", selectedValue);
     setStepValid(!!selectedValue.trim());
   };
 
@@ -85,7 +85,7 @@ console.log("Env var at top level:", process.env.NEXT_PUBLIC_API_BASE_URL);
                 <select
                   id="customerProject"
                   name="customerProject"
-                  value={data.customerProject}
+                  value={data.customerId}
                   onChange={handleSelectChange}
                   className="appearance-none text-lg w-full border-2 px-3 pr-12 py-4 border-black rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
                 >
