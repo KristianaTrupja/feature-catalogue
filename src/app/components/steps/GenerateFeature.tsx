@@ -8,25 +8,6 @@ import { toast } from "sonner";
 import { useFormContext } from "@/app/context/FormContext";
 import { EstimationData } from "@/app/types/Estimations";
 
-const featureExamples = [
-  {
-    title: "SEO Optimized Content",
-    description:
-      "Automatically include relevant SEO keywords for better ranking.",
-  },
-  {
-    title: "Storytelling Tone",
-    description: "Use a narrative style to make the article more engaging.",
-  },
-  {
-    title: "Image Placeholders",
-    description: "Add suggested images and captions for visual appeal.",
-  },
-  {
-    title: "Summary Section",
-    description: "Provide a concise summary at the end of the article.",
-  },
-];
 
 interface GenerateFeatureProps {
   onNext: () => void;
@@ -87,6 +68,7 @@ developer.`
         }
         const fetchedData = await response.json();
         setEstimation(fetchedData);
+        console.log("Fetched estimation:", fetchedData);
       } catch (err: any) {
         toast.error(err.message || "Failed to fetch estimation");
       }
@@ -96,7 +78,7 @@ developer.`
       fetchEstimation();
     }
   }, [data]);
-
+console.log(estimation,"generate feature",data,"data from context",data.estimationId)
   return (
     <div className="p-10 pb-20 bg-gray-200 h-full">
       <div className="container w-3/4 space-y-8 py-10">
