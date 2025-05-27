@@ -52,7 +52,8 @@ export default function DescriptionStep({
         toast.error(`Error: ${errorData.message || response.statusText}`);
         return;
       }
-  console.log(response,"response")
+      const result = await response.json();
+      console.log("Estimation created:", result);
       // Step 2: Upload file if available
       const file = fileInputRef.current?.files?.[0];
       if (file) {
