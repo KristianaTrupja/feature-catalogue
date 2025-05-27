@@ -34,7 +34,7 @@ export default function DescriptionStep({
   
     try {
       const customerId = data.customerId || "defaultCustomerId";
-  
+  console.log(customerId,trimmedDescription,"customerId, description");
       // 1. First, submit the description
       const response = await fetch(`${baseUrl}/AiEstimation/CreateAiEstimation`, {
         method: "POST",
