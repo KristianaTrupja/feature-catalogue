@@ -53,7 +53,8 @@ export default function DescriptionStep({
         return;
       }
       const result = await response.json();
-      console.log("Estimation created:", result);
+      updateField("estimationId", result.id);
+      console.log("Estimation created:", result.id,"result.id",result,"result",result.id.id,"result.id.id");
       // Step 2: Upload file if available
       const file = fileInputRef.current?.files?.[0];
       if (file) {
