@@ -15,8 +15,16 @@ export default function Estimation() {
       toast.error("No data to export");
       return;
     }
-    exportToExcel(estimation.realEstimations, "my-project-data");
+  
+    const formattedData = estimation.realEstimations.map((item) => ({
+      Category: item.title,
+      Description: item.description,
+      "Total estimation": item.estimatedHours,
+    }));
+  
+    exportToExcel(formattedData, "my-project-data");
   };
+  
 
   useEffect(() => {
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
