@@ -76,7 +76,7 @@ developer.`
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
     const fetchEstimations = async () => {
       try {
-        const response = await fetch(`${baseUrl}/AiEstimation/AiEstimations`);
+        const response = await fetch(`${baseUrl}/AiEstimation/AiEstimation/{id}`);
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
