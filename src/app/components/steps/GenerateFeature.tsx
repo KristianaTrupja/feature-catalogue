@@ -3,11 +3,10 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "../ui/Card";
 import { Button } from "../ui/button";
-import { Edit, Check, X } from "lucide-react";
+import { Edit, Check, X, Loader2 } from "lucide-react"; // use Loader2 from lucide-react
 import { toast } from "sonner";
 import { useFormContext } from "@/app/context/FormContext";
 import { EstimationData } from "@/app/types/Estimations";
-
 
 interface GenerateFeatureProps {
   onNext: () => void;
@@ -29,6 +28,7 @@ developer.`
   const [isEditing, setIsEditing] = useState(false);
   const [tempDescription, setTempDescription] = useState(description);
   const [estimation, setEstimation] = useState<EstimationData | null>(null);
+  const [loading, setLoading] = useState(false); // ⬅️ loading state
 
   const { data, updateField } = useFormContext();
 
@@ -57,6 +57,7 @@ developer.`
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
     const fetchEstimation = async () => {
       try {
+        setLoading(true);
         if (!data || !data.estimationId) {
           throw new Error("Estimation ID is missing");
         }
@@ -68,9 +69,10 @@ developer.`
         }
         const fetchedData = await response.json();
         setEstimation(fetchedData);
-        console.log("Fetched estimation:", fetchedData);
       } catch (err: any) {
         toast.error(err.message || "Failed to fetch estimation");
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -78,15 +80,14 @@ developer.`
       fetchEstimation();
     }
   }, [data]);
-console.log(estimation,"generate feature",data,"data from context",data.estimationId)
+
   return (
     <div className="p-10 pb-20 bg-gray-200 h-full">
       <div className="container w-3/4 space-y-8 py-10">
-        {/* Headline */}
         <h1 className="text-3xl font-bold">Description of the feature</h1>
 
         <div className="relative max-w-3xl">
-          {!isEditing && (
+          {!isEditing ? (
             <>
               <p className="text-gray-600 text-lg whitespace-pre-line">
                 {description}
@@ -99,9 +100,7 @@ console.log(estimation,"generate feature",data,"data from context",data.estimati
                 <Edit size={20} />
               </button>
             </>
-          )}
-
-          {isEditing && (
+          ) : (
             <div className="flex items-start space-x-2">
               <textarea
                 value={tempDescription}
@@ -130,39 +129,58 @@ console.log(estimation,"generate feature",data,"data from context",data.estimati
           )}
         </div>
 
-        {/* Generated Titles */}
-        {estimation && (estimation.suggestedNames?.length ?? 0) > 0 && (
-          <div>
-            <h2 className="text-xl font-semibold mb-2">Generated Titles</h2>
-            <ul className="list-disc list-inside space-y-1">
-              {estimation.suggestedNames.map((title, index) => (
-                <li key={index} className="text-gray-800">
-                  {title}
-                </li>
-              ))}
-            </ul>
+        {/* Loading Spinner */}
+        {loading && (
+          <div className="flex justify-center">
+            <Loader2 className="animate-spin h-8 w-8 text-primary" />
           </div>
         )}
 
-        {/* Feature Cards */}
-        {estimation && (estimation.realEstimations?.length ?? 0) > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-        {estimation.realEstimations.map(({ title, description }) => (
-            <Card
-              key={title}
-              title={title}
-              description={description}
-              selectable
-              checked={selectedFeatures.includes(title)}
-              onCheckChange={() => toggleFeature(title)}
-            />
-          ))}
-        </div>
+        {!loading && estimation && (
+          <>
+            {estimation.suggestedNames?.length > 0 && (
+              <div>
+                <h2 className="text-xl font-semibold mb-2">Generated Titles</h2>
+                <ul className="list-disc list-inside space-y-1">
+                  {estimation.suggestedNames.map((title, index) => (
+                    <li key={index} className="text-gray-800">
+                      {title}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+
+            {estimation.realEstimations?.length > 0 && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {estimation.realEstimations.map(({ title, description }) => (
+                  <Card
+                    key={title}
+                    title={title}
+                    description={description}
+                    selectable
+                    checked={selectedFeatures.includes(title)}
+                    onCheckChange={() => toggleFeature(title)}
+                  />
+                ))}
+              </div>
+            )}
+          </>
         )}
 
-        {/* Feature Examples */}
-        {/* Generate Button */}
-        <Button onClick={handleGenerateEstimation}>Generate estimation</Button>
+        <Button
+          onClick={handleGenerateEstimation}
+          disabled={loading}
+          className={loading ? "opacity-50 cursor-not-allowed" : ""}
+        >
+          {loading ? (
+            <span className="flex items-center gap-2">
+              <Loader2 className="animate-spin h-4 w-4" /> Generating...
+            </span>
+          ) : (
+            "Generate estimation"
+          )}
+        </Button>
       </div>
     </div>
   );

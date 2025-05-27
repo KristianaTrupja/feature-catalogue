@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { FolderUp } from "lucide-react";
 import { useFormContext } from "../../context/FormContext";
 import { Button } from "../ui/button";
+import { Loader2 } from "lucide-react";
 
 interface DescriptionStepProps {
   onNext: () => void;
@@ -17,6 +18,7 @@ export default function DescriptionStep({
 }: DescriptionStepProps) {
   const { data, updateField } = useFormContext();
   const [description, setDescription] = useState(data.description || "");
+  const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -26,16 +28,17 @@ export default function DescriptionStep({
   const handleGenerate = async () => {
     const trimmedDescription = description.trim();
     const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
-  
+
     if (!trimmedDescription) {
       toast.error("Please provide a description before proceeding.");
       return;
     }
-  
+
+    setLoading(true); // Start loading
     try {
       const customerId = data.customerId || "defaultCustomerId";
-  
-      // Step 1: Send description data
+
+      // Step 1: Send description
       const response = await fetch(`${baseUrl}/AiEstimation/CreateAiEstimation`, {
         method: "POST",
         headers: {
@@ -46,46 +49,46 @@ export default function DescriptionStep({
           description: trimmedDescription,
         }),
       });
-  
+
       if (!response.ok) {
         const errorData = await response.json();
         toast.error(`Error: ${errorData.message || response.statusText}`);
         return;
       }
+
       const result = await response.json();
       updateField("estimationId", result.id);
-      console.log("Estimation created:", result.id,"result.id",result,"result",result.id.id,"result.id.id");
+
       // Step 2: Upload file if available
       const file = fileInputRef.current?.files?.[0];
       if (file) {
         const formData = new FormData();
         formData.append("file", file);
-  
+
         const uploadResponse = await fetch(`${baseUrl}/api/File/UploadEstimationExel`, {
           method: "POST",
           body: formData,
         });
-  
+
         if (!uploadResponse.ok) {
           const uploadError = await uploadResponse.json();
           toast.error(`File upload failed: ${uploadError.message || uploadResponse.statusText}`);
           return;
         }
-  
+
         updateField("file", file);
       }
-  
-      // Step 3: Finalize
+
       updateField("description", trimmedDescription);
       toast.success("Form submitted!");
       onNext();
     } catch (error) {
       toast.error("Failed to submit estimation request.");
       console.error("Submission error:", error);
+    } finally {
+      setLoading(false); // Stop loading
     }
   };
-  
-  
 
   return (
     <div
@@ -139,7 +142,16 @@ export default function DescriptionStep({
 
           {/* Submit Button */}
           <div className="pt-4">
-            <Button onClick={handleGenerate}>Generate</Button>
+            <Button onClick={handleGenerate} disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin" />
+                  Generating...
+                </>
+              ) : (
+                "Generate"
+              )}
+            </Button>
           </div>
         </div>
       </div>
