@@ -2,24 +2,22 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import { toast } from "sonner";
-import { FolderUp } from "lucide-react";
+import { FolderUp, Loader2 } from "lucide-react";
 import { useFormContext } from "../../context/FormContext";
 import { Button } from "../ui/button";
-import { Loader2 } from "lucide-react";
 
 interface DescriptionStepProps {
   onNext: () => void;
   setStepValid: (valid: boolean) => void;
 }
 
-export default function DescriptionStep({
-  onNext,
-  setStepValid,
-}: DescriptionStepProps) {
+export default function DescriptionStep({ onNext, setStepValid }: DescriptionStepProps) {
   const { data, updateField } = useFormContext();
   const [description, setDescription] = useState(data.description || "");
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
   useEffect(() => {
     setStepValid(!!description.trim());
@@ -27,52 +25,45 @@ export default function DescriptionStep({
 
   const handleGenerate = async () => {
     const trimmedDescription = description.trim();
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
     if (!trimmedDescription) {
       toast.error("Please provide a description before proceeding.");
       return;
     }
 
-    setLoading(true); // Start loading
+    setLoading(true);
+
     try {
       const customerId = data.customerId || "defaultCustomerId";
 
-      // Step 1: Send description
-      const response = await fetch(`${baseUrl}/AiEstimation/CreateAiEstimation`, {
+      const estimationRes = await fetch(`${baseUrl}/AiEstimation/CreateAiEstimation`, {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          customerId,
-          description: trimmedDescription,
-        }),
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ customerId, description: trimmedDescription }),
       });
 
-      if (!response.ok) {
-        const errorData = await response.json();
-        toast.error(`Error: ${errorData.message || response.statusText}`);
+      if (!estimationRes.ok) {
+        const err = await estimationRes.json();
+        toast.error(`Error: ${err.message || estimationRes.statusText}`);
         return;
       }
 
-      const result = await response.json();
-      updateField("estimationId", result.id);
+      const { id } = await estimationRes.json();
+      updateField("estimationId", id);
 
-      // Step 2: Upload file if available
       const file = fileInputRef.current?.files?.[0];
       if (file) {
         const formData = new FormData();
         formData.append("file", file);
 
-        const uploadResponse = await fetch(`${baseUrl}/api/File/UploadEstimationExel`, {
+        const uploadRes = await fetch(`${baseUrl}/api/File/UploadEstimationExel`, {
           method: "POST",
           body: formData,
         });
 
-        if (!uploadResponse.ok) {
-          const uploadError = await uploadResponse.json();
-          toast.error(`File upload failed: ${uploadError.message || uploadResponse.statusText}`);
+        if (!uploadRes.ok) {
+          const uploadErr = await uploadRes.json();
+          toast.error(`File upload failed: ${uploadErr.message || uploadRes.statusText}`);
           return;
         }
 
@@ -86,7 +77,7 @@ export default function DescriptionStep({
       toast.error("Failed to submit estimation request.");
       console.error("Submission error:", error);
     } finally {
-      setLoading(false); // Stop loading
+      setLoading(false);
     }
   };
 
@@ -98,20 +89,17 @@ export default function DescriptionStep({
       <div className="w-full lg:w-3/4 2xl:w-1/2 p-10 py-14 lg:ml-40 2xl:ml-80">
         <div className="bg-white border-4 border-gray-200 rounded-3xl p-6 lg:p-8 2xl:p-14 shadow-xl space-y-6">
           <h2 className="text-2xl xl:text-4xl font-bold">Description of the module</h2>
-
           <p className="text-lg lg:text-xl text-gray-600 2xl:pr-10">
             Describe the module you would like to have estimated as precisely as possible.
             Also include its behavior on the website and modular end devices.
           </p>
 
-          {/* Description Input */}
           <div className="space-y-2">
             <label htmlFor="description" className="block text-lg font-medium text-gray-700">
               Description
             </label>
             <textarea
               id="description"
-              name="description"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               placeholder="Your description"
@@ -119,7 +107,6 @@ export default function DescriptionStep({
             />
           </div>
 
-          {/* File Upload */}
           <div className="space-y-2">
             <label htmlFor="imageUpload" className="block text-lg font-medium text-gray-700">
               Image Upload (optional)
@@ -134,13 +121,11 @@ export default function DescriptionStep({
             <input
               type="file"
               id="imageUpload"
-              name="imageUpload"
               ref={fileInputRef}
               className="hidden"
             />
           </div>
 
-          {/* Submit Button */}
           <div className="pt-4">
             <Button onClick={handleGenerate} disabled={loading}>
               {loading ? (

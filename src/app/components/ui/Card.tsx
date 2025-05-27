@@ -6,7 +6,7 @@ interface CardProps extends React.HTMLAttributes<HTMLDivElement> {
   description?: string;
   checked?: boolean;
   onCheckChange?: (checked: boolean) => void;
-  selectable?: boolean; // show checkbox inside card
+  selectable?: boolean;
 }
 
 export const Card: React.FC<CardProps> = ({

@@ -12,7 +12,7 @@ type StepSidebarProps = {
 };
 
 const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
-  ({ steps, currentStep, onStepChange }, ref) => {
+  ({ steps, currentStep}, ref) => {
     return (
       <div
         ref={ref}

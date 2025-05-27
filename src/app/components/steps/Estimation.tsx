@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import { Button } from "../ui/button";
 import { exportToExcel } from "@/app/utils/exportToExel";
@@ -10,38 +12,21 @@ export default function Estimation() {
   const [loading, setLoading] = useState(false);
   const { data } = useFormContext();
 
-  const handleDownload = () => {
-    if (!estimation?.realEstimations) {
-      toast.error("No data to export");
-      return;
-    }
-  
-    const formattedData = estimation.realEstimations.map((item) => ({
-      Category: item.title,
-      Description: item.description,
-      "Total estimation": item.estimatedHours,
-    }));
-  
-    exportToExcel(formattedData, "my-project-data");
-  };
-  
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
   useEffect(() => {
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
     const fetchEstimation = async () => {
+      if (!data?.estimationId) {
+        toast.error("Estimation ID is missing");
+        return;
+      }
+
       try {
         setLoading(true);
-        if (!data || !data.estimationId) {
-          throw new Error("Estimation ID is missing");
-        }
-        const response = await fetch(
-          `${baseUrl}/AiEstimation/AiEstimation/${data.estimationId}`
-        );
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        const fetchedData = await response.json();
-        setEstimation(fetchedData);
+        const res = await fetch(`${baseUrl}/AiEstimation/AiEstimation/${data.estimationId}`);
+        if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+        const result = await res.json();
+        setEstimation(result);
       } catch (err: any) {
         toast.error(err.message || "Failed to fetch estimation");
       } finally {
@@ -49,10 +34,49 @@ export default function Estimation() {
       }
     };
 
-    if (data) {
-      fetchEstimation();
+    fetchEstimation();
+  }, [data, baseUrl]);
+
+  const handleDownload = () => {
+    if (!estimation?.realEstimations?.length) {
+      toast.error("No data to export");
+      return;
     }
-  }, [data]);
+
+    const formatted = estimation.realEstimations.map(({ title, description, estimatedHours }) => ({
+      Category: title,
+      Description: description,
+      "Total estimation": estimatedHours,
+    }));
+
+    exportToExcel(formatted, "my-project-data");
+  };
+
+  const renderTableBody = () => {
+    if (loading) {
+      return (
+        <tr>
+          <td colSpan={3} className="text-center py-6">Loading estimations...</td>
+        </tr>
+      );
+    }
+
+    if (!estimation?.realEstimations?.length) {
+      return (
+        <tr>
+          <td colSpan={3} className="text-center py-6">No estimations available.</td>
+        </tr>
+      );
+    }
+
+    return estimation.realEstimations.map(({ title, description, estimatedHours }, idx) => (
+      <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
+        <td className="border border-gray-300 px-4 py-2">{title}</td>
+        <td className="border border-gray-300 px-4 py-2">{description}</td>
+        <td className="border border-gray-300 px-4 py-2">{estimatedHours}</td>
+      </tr>
+    ));
+  };
 
   return (
     <div className="mt-10 bg-gray-200">
@@ -67,42 +91,11 @@ export default function Estimation() {
               <th className="border border-gray-300 px-4 py-2 text-left">Total estimation</th>
             </tr>
           </thead>
-          {loading ? (
-            <tbody>
-              <tr>
-                <td colSpan={3} className="text-center py-6">
-                  Loading estimations...
-                </td>
-              </tr>
-            </tbody>
-          ) : estimation?.realEstimations?.length ? (
-            <tbody>
-              {estimation.realEstimations.map(
-                ({ title, description, estimatedHours }, index) => (
-                  <tr
-                    key={index}
-                    className={index % 2 === 0 ? "bg-white" : "bg-gray-50"}
-                  >
-                    <td className="border border-gray-300 px-4 py-2">{title}</td>
-                    <td className="border border-gray-300 px-4 py-2">{description}</td>
-                    <td className="border border-gray-300 px-4 py-2">{estimatedHours}</td>
-                  </tr>
-                )
-              )}
-            </tbody>
-          ) : (
-            <tbody>
-              <tr>
-                <td colSpan={3} className="text-center py-6">
-                  No estimations available.
-                </td>
-              </tr>
-            </tbody>
-          )}
+          <tbody>{renderTableBody()}</tbody>
         </table>
 
         <Button onClick={handleDownload} disabled={loading || !estimation}>
-          Download Excel
+          {loading ? "Please wait..." : "Download Excel"}
         </Button>
       </div>
     </div>

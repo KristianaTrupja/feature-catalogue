@@ -15,7 +15,7 @@ const StepTopNav: React.FC<StepTopNavProps> = ({
   disableBack = false,
   disableNext = false,
 }) => {
-  const buttonBaseClasses = "flex items-center gap-1 text-black font-semibold";
+  const buttonBaseClasses = "flex items-center gap-1 text-black font-semibold hover:text-primary";
 
   return (
     <div className="flex justify-center lg:justify-end lg:absolute lg:top-0 w-full bg-gray-200 z-50">
@@ -25,10 +25,10 @@ const StepTopNav: React.FC<StepTopNavProps> = ({
           disabled={disableBack}
           className={cn(
             buttonBaseClasses,
-            disableBack && "opacity-50 cursor-not-allowed"
+            disableBack && "opacity-50 cursor-not-allowed hover:text-black"
           )}
         >
-          <ArrowLeft className="w-4 h-4 mr-1" />
+          <ArrowLeft className="w-4 h-4 mr-1 " />
           Back
         </button>
         <button
@@ -36,7 +36,7 @@ const StepTopNav: React.FC<StepTopNavProps> = ({
           disabled={disableNext}
           className={cn(
             buttonBaseClasses,
-            disableNext && "opacity-50 cursor-not-allowed"
+            disableNext && "opacity-50 cursor-not-allowed hover:text-black"
           )}
         >
           Next

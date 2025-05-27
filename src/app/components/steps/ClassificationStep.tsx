@@ -18,12 +18,9 @@ export default function ClassificationStep({ setStepValid }: ClassificationStepP
   const [options, setOptions] = useState<CustomerProjectOption[]>([
     { label: "Loading...", value: "" },
   ]);
+  const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
   useEffect(() => {
-    // Use environment variable for API base URL
-    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
-console.log("Base URL:", baseUrl);
-console.log("Env var at top level:", process.env.NEXT_PUBLIC_API_BASE_URL);
     const fetchCustomerProjects = async () => {
       try {
         const res = await fetch(`${baseUrl}/Customer/GetAllCustomers`);
