@@ -1,4 +1,7 @@
 import React, { forwardRef } from "react";
+import { useRouter } from "next/navigation";
+import { useFormContext } from "@/app/context/FormContext";
+import { cn } from "@/app/lib/utils";
 
 type Step = {
   label: string;
@@ -13,6 +16,26 @@ type StepSidebarProps = {
 
 const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
   ({ steps, currentStep}, ref) => {
+    const router = useRouter(); // ✅ initialize the router
+    const { data } = useFormContext();
+    console.log(data)
+    const isCustomerProjectFilled = data.customerId.trim().length > 0;
+    const isDescriptionFilled = data.customerId.trim().length > 0;
+
+    const isStepEnabled = (index: number) => {
+      if (index === 0) return true;
+      if (index === 1) return isCustomerProjectFilled;
+      if (index === 2) return isCustomerProjectFilled && isDescriptionFilled;
+      if (index === 3) return isCustomerProjectFilled && isDescriptionFilled;
+
+      return false; // Disable by default unless logic is added
+    };
+
+    const handleStepClick = (index: number) => {
+      if (!isStepEnabled(index)) return;
+
+      router.push(`?step=${index + 1}`);
+    };
     return (
       <div
         ref={ref}
@@ -20,6 +43,8 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
       >
         {steps.map((step, index) => {
           const isActive = index <= currentStep;
+          const isDisabled = !isStepEnabled(index);
+
           const circleClass = isActive
             ? "bg-primary text-white border-primary"
             : "text-[#d773b5] border-[#d773b5]";
@@ -33,21 +58,24 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
               key={index}
               className="flex lg:flex-col items-center"
             >
-              <div className="flex flex-col items-center">
+              <div
+                className={cn("flex flex-col items-center", isDisabled ? "cursor-not-allowed" : "cursor-pointer")}
+                onClick={() => !isDisabled && handleStepClick(index)}
+              >
                 <div
-                  className={`flex items-center justify-center text-xl w-10 h-10 2xl:w-16 2xl:h-16 rounded-full border-2 font-bold ${circleClass}`}
+                  className={cn("flex items-center justify-center text-xl w-10 h-10 lg:w-14 lg:h-14 2xl:w-16 2xl:h-16 rounded-full border-2 font-bold", circleClass)}
                 >
                   {index + 1}
                 </div>
                 <div
-                  className={`text-sm mt-2 text-center font-bold lg:text-md ${textClass}`}
+                  className={cn("text-sm mt-2 text-center font-bold lg:text-md", textClass)}
                 >
                   {step.description}
                 </div>
               </div>
 
               {index < steps.length - 1 && (
-                <div className="h-px w-10 mt-1 lg:w-px lg:h-5 2xl:h-16 2xl:mt-5 bg-primary" />
+                <div className="h-px w-10 mt-1 lg:w-px lg:h-10 2xl:h-16 2xl:mt-5 bg-primary" />
               )}
             </div>
           );

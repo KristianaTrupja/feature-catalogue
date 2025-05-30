@@ -8,8 +8,8 @@ import React, {
 } from "react";
 
 interface FormData {
-  customerId?: string;
-  description?: string;
+  customerId: string;
+  description: string;
   file?: File;
   estimationId: string;
 }

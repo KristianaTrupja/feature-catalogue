@@ -27,7 +27,7 @@
 
 body {
   font-family: var(--font-montserrat), sans-serif;
-
+  
   .gradient-shadow {
     background: linear-gradient(90deg, #08295e, #612cdd, #bb4f01, #e2ab06);
     filter: blur(20px);
@@ -42,6 +42,7 @@ body {
 
 .container {
   margin: 0 auto;
+  padding: 0 20px;
 }
 
 .title-underscore {

@@ -1,6 +1,6 @@
 import React from "react";
 import { ArrowLeft, ArrowRight } from "lucide-react";
-import { cn } from "@/lib/utils";
+import { cn } from "@/app/lib/utils";
 
 interface StepTopNavProps {
   onBack?: () => void;
@@ -18,8 +18,8 @@ const StepTopNav: React.FC<StepTopNavProps> = ({
   const buttonBaseClasses = "flex items-center gap-1 text-black font-semibold hover:text-primary";
 
   return (
-    <div className="flex justify-center lg:justify-end lg:absolute lg:top-0 w-full bg-gray-200 z-50">
-      <div className="w-[90%] flex justify-between py-4 px-20 sticky top-0 z-50 items-end">
+    <div className="flex justify-center w-full bg-gray-200 z-50 sticky top-0">
+      <div className="w-[90%] flex justify-between py-4 px-20 items-end">
         <button
           onClick={onBack}
           disabled={disableBack}

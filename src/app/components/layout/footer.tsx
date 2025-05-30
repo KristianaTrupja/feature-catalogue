@@ -8,16 +8,19 @@ export default function Footer() {
       <div className="container mx-auto px-4 md:px-6 max-w-6xl">
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 justify-center max-lg:items-center max-lg:text-center">
           {/* Left Column */}
-          <div>
-            <h2 className="text-4xl font-bold lg:mb-6 relative inline-block pb-5">
-              Get in touch
-              <span className="absolute bottom-0 left-0 w-full title-underscore h-5"></span>
-            </h2>
+          <div className="left-column">
+            <Button asChild variant={"ghost"} className="font-bold h-auto pt-0 px-0">
+              <Link className="text-4xl font-bold lg:mb-6 relative inline-block pb-5" href={"https://canvasreply.de/"} target="_blank" rel="noopener noreferrer">
+                Get in touch
+                <span className="absolute bottom-0 left-0 w-full title-underscore h-5"></span>
+              </Link>
+            </Button>
 
             <div className="flex space-x-4 mt-8 max-lg:justify-center">
               <Button asChild className="" size={"icon"} variant={"social"}>
                 <Link
                   href="https://www.linkedin.com/company/canvas-reply-gmbh/"
+                  target="_blank" rel="noopener noreferrer"
                   aria-label="Go to social media profile"
                 >
                   <svg
@@ -37,25 +40,25 @@ export default function Footer() {
           </div>
 
           {/* Right Column */}
-          <div className="">
+          <div className="right-column">
             <div className="lg:mt-4 flex items-start gap-6 text-center leading-7 sm:gap-12 lg:text-left md:col-start-auto">
               <ul className="w-full last:font-normal font-semibold">
                 <li className="py-1">
-                  <Link href="https://canvasreply.de/en/pages/Services">
+                  <Link href="https://canvasreply.de/en/pages/Services" target="_blank" rel="noopener noreferrer">
                     <span className="text whitespace-nowrap text-white">
                       Services
                     </span>
                   </Link>
                 </li>
                 <li className="py-1">
-                  <Link href="https://canvasreply.de/en/pages/experience-editor-in-ai">
+                  <Link href="https://canvasreply.de/en/pages/experience-editor-in-ai" target="_blank" rel="noopener noreferrer">
                     <span className="text whitespace-nowrap text-white">
                       AI Accelerators
                     </span>
                   </Link>
                 </li>
                 <li className="py-1">
-                  <Link href="https://canvasreply.de/en/pages/our-partners">
+                  <Link href="https://canvasreply.de/en/pages/our-partners" target="_blank" rel="noopener noreferrer">
                     <span className="text whitespace-nowrap text-white">
                       Partnerships
                     </span>
@@ -64,21 +67,21 @@ export default function Footer() {
               </ul>
               <ul className="w-full font-semibold">
                 <li className="py-1">
-                  <Link href="https://canvasreply.de/en/pages/career">
+                  <Link href="https://canvasreply.de/en/pages/career" target="_blank" rel="noopener noreferrer">
                     <span className="text whitespace-nowrap text-white">
                       Career &amp; Jobs
                     </span>
                   </Link>
                 </li>
                 <li className="py-1">
-                  <Link href="https://www.reply.com">
+                  <Link href="https://www.reply.com" target="_blank" rel="noopener noreferrer">
                     <span className="text whitespace-nowrap text-white">
                       Part of Reply Group
                     </span>
                   </Link>
                 </li>
                 <li className="py-1">
-                  <Link href="https://canvasreply.de/en/pages/imprint">
+                  <Link href="https://canvasreply.de/en/pages/imprint" target="_blank" rel="noopener noreferrer">
                     <span className="text whitespace-nowrap text-white">
                       Imprint
                     </span>
@@ -87,7 +90,7 @@ export default function Footer() {
               </ul>
             </div>
             <Button asChild className="mt-4 py-6 px-14">
-              <Link href="https://canvasreply.de/en/pages/career" className="flex items-center gap-1">
+              <Link className="flex items-center gap-1" href="https://canvasreply.de/en/pages/career" target="_blank" rel="noopener noreferrer">
                 <span>Your success is our goal</span>
                 <ArrowIcon />
               </Link>

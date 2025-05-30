@@ -5,6 +5,7 @@ import Header from "./components/layout/header";
 import Footer from "./components/layout/footer";
 import { Toaster } from "sonner";
 import { FormProvider } from "./context/FormContext";
+import { cn } from "@/app/lib/utils";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -23,10 +24,12 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={`antialiased ${montserrat.variable}`}>
+      <body className={cn("antialiased" ,montserrat.variable)}>
       <FormProvider>
         <Header/>
+        <main>
         {children}
+        </main>
         <Toaster richColors position="top-center" />
         <Footer/>
         </FormProvider>

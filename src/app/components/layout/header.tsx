@@ -10,7 +10,7 @@ const Header = () => {
           <Logo />
         </Link>
         <Button>
-          <Link href={"https://canvasreply.de/en/pages/career"} className="flex items-center gap-1">
+          <Link className="flex items-center gap-1" href={"https://canvasreply.de/en/pages/career"} target="_blank" rel="noopener noreferrer">
             <span>Join our team</span>
             <ArrowIcon />
           </Link>

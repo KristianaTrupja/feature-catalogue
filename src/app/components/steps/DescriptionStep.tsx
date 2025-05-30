@@ -13,18 +13,17 @@ interface DescriptionStepProps {
 
 export default function DescriptionStep({ onNext, setStepValid }: DescriptionStepProps) {
   const { data, updateField } = useFormContext();
-  const [description, setDescription] = useState(data.description || "");
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
 
   useEffect(() => {
-    setStepValid(!!description.trim());
-  }, [description, setStepValid]);
+    setStepValid(!!data.description.trim());
+  }, [data.description, setStepValid]);
 
   const handleGenerate = async () => {
-    const trimmedDescription = description.trim();
+    const trimmedDescription = data.description.trim();
 
     if (!trimmedDescription) {
       toast.error("Please provide a description before proceeding.");
@@ -100,8 +99,8 @@ export default function DescriptionStep({ onNext, setStepValid }: DescriptionSte
             </label>
             <textarea
               id="description"
-              value={description}
-              onChange={(e) => setDescription(e.target.value)}
+              value={data.description}
+              onChange={(e) => updateField("description", e.target.value)}
               placeholder="Your description"
               className="w-2/3 text-lg border-2 border-black px-3 py-2 2xl:py-4 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
