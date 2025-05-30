@@ -18,10 +18,8 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
   ({ steps, currentStep}, ref) => {
     const router = useRouter(); // ✅ initialize the router
     const { data } = useFormContext();
-    console.log(data)
     const isCustomerProjectFilled = data.customerId.trim().length > 0;
-    const isDescriptionFilled = data.customerId.trim().length > 0;
-
+    const isDescriptionFilled = data.description.trim().length > 0;
     const isStepEnabled = (index: number) => {
       if (index === 0) return true;
       if (index === 1) return isCustomerProjectFilled;
