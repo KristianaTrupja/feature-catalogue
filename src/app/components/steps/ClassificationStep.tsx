@@ -55,10 +55,9 @@ export default function ClassificationStep({ setStepValid }: ClassificationStepP
 
   return (
     <div
-      className="h-full bg-cover bg-bottom bg-no-repeat bg-gray-200"
-      style={{ backgroundImage: "url('/images/first-step-background-image.png')" }}
+      className="h-full bg-right bg-contain bg-no-repeat bg-[url('/images/bg-2.webp')] bg-[#fdfdfd]"
     >
-      <div className="flex items-center justify-center h-full w-full px-4 py-10 lg:px-20">
+      <div className="flex items-center justify-center lg:justify-start h-full w-full px-4 py-10 lg:px-20 lg:ml-44 overflow-x-hidden">
         <div className="w-full max-w-3xl">
           <div className="relative bg-white rounded-3xl p-6 lg:p-7 2xl:p-12 space-y-6 shadow-xl border-4 border-gray-200">
             <h2 className="text-4xl 2xl:text-5xl font-bold">

@@ -70,14 +70,14 @@ export default function StepContainer() {
           steps={steps}
           onStepChange={goToStep}
         />
-        <div className="flex-1 flex flex-col overflow-y-auto bg-gray-200">
+        <div className="flex-1 flex flex-col overflow-y-auto bg-gray-200 overflow-x-hidden">
+          <div className="h-full">{renderStep()}</div>
           <StepTopNav
             onBack={goBack}
             onNext={goNext}
             disableBack={currentStep === 0}
             disableNext={!isStepValid}
           />
-          <div className="h-full">{renderStep()}</div>
         </div>
       </div>
     </DynamicHeightWrapper>

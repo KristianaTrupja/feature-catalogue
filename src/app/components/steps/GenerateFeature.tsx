@@ -82,8 +82,8 @@ developer.`
   }, [data]);
 
   return (
-    <div className="p-10 pb-20 bg-gray-200 h-full">
-      <div className="container w-3/4 space-y-8 py-10">
+    <div className="lg:p-10 pb-20 h-full bg-right bg-contain bg-no-repeat bg-[url('/images/bg-2.webp')] bg-[#fdfdfd]">
+      <div className="container lg:w-3/4 space-y-8 bg-white lg:bg-transparent w-full py-10">
         <h1 className="text-3xl font-bold">Description of the feature</h1>
 
         <div className="relative max-w-3xl">

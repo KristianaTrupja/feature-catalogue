@@ -18,8 +18,8 @@ const StepTopNav: React.FC<StepTopNavProps> = ({
   const buttonBaseClasses = "flex items-center gap-1 text-black font-semibold hover:text-primary";
 
   return (
-    <div className="flex justify-center w-full bg-gray-200 z-50 sticky top-0">
-      <div className="w-[90%] flex justify-between py-4 px-20 items-end">
+    <div className="flex justify-center w-full z-50 sticky top-0">
+      <div className="w-[50%] flex justify-between py-4 px-20 items-end">
         <button
           onClick={onBack}
           disabled={disableBack}

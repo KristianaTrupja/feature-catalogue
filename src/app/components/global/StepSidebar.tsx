@@ -18,8 +18,10 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
   ({ steps, currentStep}, ref) => {
     const router = useRouter(); // ✅ initialize the router
     const { data } = useFormContext();
+    console.log(data)
     const isCustomerProjectFilled = data.customerId.trim().length > 0;
-    const isDescriptionFilled = data.description.trim().length > 0;
+    const isDescriptionFilled = data.customerId.trim().length > 0;
+
     const isStepEnabled = (index: number) => {
       if (index === 0) return true;
       if (index === 1) return isCustomerProjectFilled;
@@ -44,11 +46,11 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
           const isDisabled = !isStepEnabled(index);
 
           const circleClass = isActive
-            ? "bg-primary text-white border-primary"
+            ? "bg-[#d773b5] text-white border-[#d773b5"
             : "text-[#d773b5] border-[#d773b5]";
 
           const textClass = isActive
-            ? "text-primary font-semibold"
+            ? "text-[#d773b5] font-semibold"
             : "text-[#d773b5]";
 
           return (

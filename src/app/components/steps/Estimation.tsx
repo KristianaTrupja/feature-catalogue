@@ -79,7 +79,7 @@ export default function Estimation() {
   };
 
   return (
-    <div className="mt-10 bg-gray-200">
+    <div className="h-full bg-right bg-contain bg-no-repeat bg-[url('/images/bg-2.webp')] bg-[#fdfdfd]">
       <div className="container lg:w-3/4 space-y-8 p-5 lg:p-10">
         <h1 className="text-3xl font-bold">Estimation Results</h1>
 
