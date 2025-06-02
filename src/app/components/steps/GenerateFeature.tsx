@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Card } from "../ui/Card";
 import { Button } from "../ui/button";
-import { Edit, Check, X, Loader2 } from "lucide-react";
+import { Edit, Check, X, Loader2 } from "lucide-react"; // use Loader2 from lucide-react
+import { toast } from "sonner";
 import { useFormContext } from "@/app/context/FormContext";
 import { EstimationData } from "@/app/types/Estimations";
 
@@ -26,57 +27,10 @@ developer.`
   );
   const [isEditing, setIsEditing] = useState(false);
   const [tempDescription, setTempDescription] = useState(description);
+  const [estimation, setEstimation] = useState<EstimationData | null>(null);
+  const [loading, setLoading] = useState(false); // ⬅️ loading state
 
-  const { updateField } = useFormContext();
-
-  // Static estimation data
-  const estimation: EstimationData = {
-    suggestedNames: ["User Authentication", "Admin Dashboard", "Payment Integration"],
-    realEstimations: [
-      {
-        title: "User Login & Registration",
-        description: " A standard login and signup form with email verification, password reset, and basic validation. Estimated 3–5 days.A standard login and signup form with email verification, password reset, and basic validation. Estimated 3–5 days.A standard login and signup form with email verification, password reset, and basic validation. Estimated 3–5 days.",
-        id: 0,
-        estimatedHours: 0
-      },
-      {
-        title: "Admin Dashboard",
-        description: "",
-        id: 0,
-        estimatedHours: 0
-      },
-      {
-        title: "Payment Gateway Integration",
-        description: "Stripe payment integration with success/failure callbacks and webhook handling. Estimated 4–6 days.",
-        id: 0,
-        estimatedHours: 0
-      },
-      {
-        title: "Notifications System",
-        description: "",
-        id: 0,
-        estimatedHours: 0
-      },
-      {
-        title: "Role-Based Access Control Role-Based Access Control",
-        description: "",
-        id: 0,
-        estimatedHours: 0
-      },
-      {
-        title: "Analytics Tracking",
-        description: "",
-        id: 0,
-        estimatedHours: 0
-      }
-    ],
-    category: "",
-    customer: undefined,
-    customerId: 0,
-    description: "",
-    estimation: 0,
-    id: 0
-  };
+  const { data, updateField } = useFormContext();
 
   const toggleFeature = (title: string) => {
     setSelectedFeatures((prev) =>
@@ -98,6 +52,34 @@ developer.`
     setStepValid(true);
     onNext();
   };
+
+  useEffect(() => {
+    const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "";
+    const fetchEstimation = async () => {
+      try {
+        setLoading(true);
+        if (!data || !data.estimationId) {
+          throw new Error("Estimation ID is missing");
+        }
+        const response = await fetch(
+          `${baseUrl}/AiEstimation/AiEstimation/${data.estimationId}`
+        );
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const fetchedData = await response.json();
+        setEstimation(fetchedData);
+      } catch (err: any) {
+        toast.error(err.message || "Failed to fetch estimation");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (data) {
+      fetchEstimation();
+    }
+  }, [data]);
 
   return (
     <div className="lg:p-10 pb-20 h-full bg-right bg-contain bg-no-repeat bg-[url('/images/bg-2.webp')] bg-[#fdfdfd]">
@@ -147,7 +129,14 @@ developer.`
           )}
         </div>
 
-        {estimation && (
+        {/* Loading Spinner */}
+        {loading && (
+          <div className="flex justify-center">
+            <Loader2 className="animate-spin h-8 w-8 text-primary" />
+          </div>
+        )}
+
+        {!loading && estimation && (
           <>
             {estimation.suggestedNames?.length > 0 && (
               <div>
@@ -181,9 +170,16 @@ developer.`
 
         <Button
           onClick={handleGenerateEstimation}
-          className="mt-4"
+          disabled={loading}
+          className={loading ? "opacity-50 cursor-not-allowed" : ""}
         >
-          Generate estimation
+          {loading ? (
+            <span className="flex items-center gap-2">
+              <Loader2 className="animate-spin h-4 w-4" /> Generating...
+            </span>
+          ) : (
+            "Generate estimation"
+          )}
         </Button>
       </div>
     </div>
