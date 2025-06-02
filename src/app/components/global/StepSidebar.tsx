@@ -47,7 +47,7 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
 
           const circleClass = isActive
             ? "bg-[#d773b5] text-white border-[#d773b5]"
-            : "text-[#d773b5]";
+            : "text-[#d773b5] border-[#d773b5]";
 
           const textClass = "text-[#d773b5] font-semibold";
 
