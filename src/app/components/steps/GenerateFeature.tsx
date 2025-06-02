@@ -85,12 +85,12 @@ developer.`
     <div className="lg:p-10 pb-20 h-full bg-right bg-contain bg-no-repeat bg-[url('/images/bg-2.webp')] bg-[#fdfdfd]">
       <div className="container lg:w-3/4 space-y-8 bg-white lg:bg-transparent w-full py-10">
         {/* Title with background */}
-        <div className="bg-white/70 rounded-xl p-4 shadow-sm">
+        <div className="bg-white/70 rounded-xl p-4 shadow-sm w-fit">
           <h1 className="text-3xl font-bold">Description of the feature</h1>
         </div>
 
         {/* Description with background */}
-        <div className="relative max-w-3xl bg-white/70 rounded-xl p-4 shadow-sm">
+        <div className="relative max-w-3xl bg-white/70 rounded-xl p-4 shadow-sm w-fit">
           {!isEditing ? (
             <>
               <p className="text-gray-600 text-lg whitespace-pre-line">
