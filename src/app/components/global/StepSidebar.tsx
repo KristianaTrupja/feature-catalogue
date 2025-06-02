@@ -18,6 +18,7 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
   ({ steps, currentStep}, ref) => {
     const router = useRouter(); // ✅ initialize the router
     const { data } = useFormContext();
+    console.log(data)
     const isCustomerProjectFilled = data.customerId.trim().length > 0;
     const isDescriptionFilled = data.customerId.trim().length > 0;
 
@@ -31,7 +32,7 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
     };
 
     const handleStepClick = (index: number) => {
-      // if (!isStepEnabled(index)) return;
+      if (!isStepEnabled(index)) return;
 
       router.push(`?step=${index + 1}`);
     };
@@ -45,11 +46,11 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
           const isDisabled = !isStepEnabled(index);
 
           const circleClass = isActive
-            ? "bg-[#d773b5] text-white border-[#d773b5]"
+            ? "bg-primary text-white border-primary"
             : "text-[#d773b5] border-[#d773b5]";
 
           const textClass = isActive
-            ? "text-[#d773b5] font-semibold"
+            ? "text-primary font-semibold"
             : "text-[#d773b5]";
 
           return (
@@ -59,7 +60,7 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
             >
               <div
                 className={cn("flex flex-col items-center", isDisabled ? "cursor-not-allowed" : "cursor-pointer")}
-                 onClick={() =>handleStepClick(index)}
+                onClick={() => !isDisabled && handleStepClick(index)}
               >
                 <div
                   className={cn("flex items-center justify-center text-xl w-10 h-10 lg:w-14 lg:h-14 2xl:w-16 2xl:h-16 rounded-full border-2 font-bold", circleClass)}
