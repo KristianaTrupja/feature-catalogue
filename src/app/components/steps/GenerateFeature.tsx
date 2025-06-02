@@ -144,7 +144,7 @@ developer.`
         {!loading && estimation && (
           <>
             {estimation.suggestedNames?.length > 0 && (
-              <div className="bg-white/70 rounded-xl p-4 shadow-sm W-FIT">
+              <div className="bg-white/70 rounded-xl p-4 shadow-sm w-fit ">
                 <h2 className="text-xl font-semibold mb-2">Generated Titles</h2>
                 <ul className="list-disc list-inside space-y-1">
                   {estimation.suggestedNames.map((title, index) => (
