@@ -31,7 +31,7 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
     };
 
     const handleStepClick = (index: number) => {
-      if (!isStepEnabled(index)) return;
+      // if (!isStepEnabled(index)) return;
 
       router.push(`?step=${index + 1}`);
     };
@@ -59,7 +59,7 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
             >
               <div
                 className={cn("flex flex-col items-center", isDisabled ? "cursor-not-allowed" : "cursor-pointer")}
-                 onClick={() => !isDisabled && handleStepClick(index)}
+                 onClick={() =>handleStepClick(index)}
               >
                 <div
                   className={cn("flex items-center justify-center text-xl w-10 h-10 lg:w-14 lg:h-14 2xl:w-16 2xl:h-16 rounded-full border-2 font-bold", circleClass)}

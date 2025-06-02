@@ -70,7 +70,7 @@ export default function StepContainer() {
           steps={steps}
           onStepChange={goToStep}
         />
-        <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden">
+        <div className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden justify-between">
           <div>{renderStep()}</div>
           <StepTopNav
             onBack={goBack}

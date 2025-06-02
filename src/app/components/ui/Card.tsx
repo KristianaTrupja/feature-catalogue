@@ -37,7 +37,7 @@ export const Card: React.FC<CardProps> = ({
         }
       }}
       className={cn(
-        "rounded-3xl border p-6 space-y-4 cursor-pointer select-none shadow-lg transition-transform transform bg-gradient-to-tr min-h-[220px]",
+        "rounded-3xl border p-6 space-y-4 cursor-pointer select-none shadow-lg transition-transform transform bg-gradient-to-tr min-h-[100px]",
         selectable && checked
           ? "from-pink-300 via-purple-300 to-indigo-400 border-indigo-600 shadow-[0_0_15px_rgba(99,102,241,0.6)]"
           : "from-pink-100 via-purple-100 to-indigo-200 border-gray-300 hover:scale-[1.03] hover:shadow-xl",
@@ -45,8 +45,8 @@ export const Card: React.FC<CardProps> = ({
       )}
       {...props}
     >
-      <div className="flex items-center justify-between gap-2">
-        <h3 className="text-2xl font-extrabold text-[#353535] tracking-wide">
+      <div className="flex items-center justify-between relative">
+        <h3 className="text-2xl font-extrabold text-[#353535] tracking-wide mr-7">
           {title}
         </h3>
         {selectable && (
@@ -55,7 +55,7 @@ export const Card: React.FC<CardProps> = ({
             checked={checked}
             onChange={(e) => onCheckChange?.(e.target.checked)}
             onClick={(e) => e.stopPropagation()}
-            className="w-6 h-6 cursor-pointer rounded-lg border-2 border-indigo-500 focus:ring-indigo-400 transition duration-200 ease-in-out"
+            className="w-6 h-6 cursor-pointer rounded-lg border-2 border-indigo-500 focus:ring-indigo-400 transition duration-200 ease-in-out absolute right-0 top-0"
           />
         )}
       </div>
