@@ -59,14 +59,14 @@ export const Card: React.FC<CardProps> = ({
           />
         )}
       </div>
-      <p
-        className={cn(
-          "text-base text-gray-700 leading-relaxed transition-opacity duration-300",
-          description ? "opacity-100" : "opacity-0"
-        )}
+      {description && (
+        <p
+        className="text-base text-gray-700 leading-relaxed transition-opacity duration-300"
       >
-        {description || "Placeholder to maintain height"}
+        {description}
       </p>
+      )}
+      
     </div>
   );
 };

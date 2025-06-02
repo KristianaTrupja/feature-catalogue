@@ -3,7 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { Card } from "../ui/Card";
 import { Button } from "../ui/button";
-import { Edit, Check, X, Loader2 } from "lucide-react"; // use Loader2 from lucide-react
+import { Edit, Check, X, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 import { useFormContext } from "@/app/context/FormContext";
 import { EstimationData } from "@/app/types/Estimations";
@@ -28,7 +28,7 @@ developer.`
   const [isEditing, setIsEditing] = useState(false);
   const [tempDescription, setTempDescription] = useState(description);
   const [estimation, setEstimation] = useState<EstimationData | null>(null);
-  const [loading, setLoading] = useState(false); // ⬅️ loading state
+  const [loading, setLoading] = useState(false);
 
   const { data, updateField } = useFormContext();
 
@@ -84,9 +84,13 @@ developer.`
   return (
     <div className="lg:p-10 pb-20 h-full bg-right bg-contain bg-no-repeat bg-[url('/images/bg-2.webp')] bg-[#fdfdfd]">
       <div className="container lg:w-3/4 space-y-8 bg-white lg:bg-transparent w-full py-10">
-        <h1 className="text-3xl font-bold">Description of the feature</h1>
+        {/* Title with background */}
+        <div className="bg-white/70 rounded-xl p-4 shadow-sm">
+          <h1 className="text-3xl font-bold">Description of the feature</h1>
+        </div>
 
-        <div className="relative max-w-3xl">
+        {/* Description with background */}
+        <div className="relative max-w-3xl bg-white/70 rounded-xl p-4 shadow-sm">
           {!isEditing ? (
             <>
               <p className="text-gray-600 text-lg whitespace-pre-line">
@@ -136,10 +140,11 @@ developer.`
           </div>
         )}
 
+        {/* Suggested Titles with background */}
         {!loading && estimation && (
           <>
             {estimation.suggestedNames?.length > 0 && (
-              <div>
+              <div className="bg-white/70 rounded-xl p-4 shadow-sm">
                 <h2 className="text-xl font-semibold mb-2">Generated Titles</h2>
                 <ul className="list-disc list-inside space-y-1">
                   {estimation.suggestedNames.map((title, index) => (
