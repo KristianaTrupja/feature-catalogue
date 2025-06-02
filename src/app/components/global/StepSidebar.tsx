@@ -45,7 +45,7 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
           const isDisabled = !isStepEnabled(index);
 
           const circleClass = isActive
-            ? "bg-[#d773b5] text-white border-[#d773b5"
+            ? "bg-[#d773b5] text-white border-[#d773b5]"
             : "text-[#d773b5] border-[#d773b5]";
 
           const textClass = isActive
@@ -59,7 +59,7 @@ const StepSidebar = forwardRef<HTMLDivElement, StepSidebarProps>(
             >
               <div
                 className={cn("flex flex-col items-center", isDisabled ? "cursor-not-allowed" : "cursor-pointer")}
-                onClick={() => !isDisabled && handleStepClick(index)}
+                 onClick={() => !isDisabled && handleStepClick(index)}
               >
                 <div
                   className={cn("flex items-center justify-center text-xl w-10 h-10 lg:w-14 lg:h-14 2xl:w-16 2xl:h-16 rounded-full border-2 font-bold", circleClass)}
