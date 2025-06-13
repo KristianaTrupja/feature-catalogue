@@ -6,7 +6,7 @@ const PASS = process.env.BASIC_AUTH_PASS!;
 
 export function middleware(request: NextRequest) {
   const auth = request.headers.get("authorization");
-
+console.log("Middleware triggered for URL:", request.url);
   if (auth) {
     const [scheme, encoded] = auth.split(" ");
     if (scheme === "Basic") {
