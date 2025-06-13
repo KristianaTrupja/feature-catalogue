@@ -1,18 +1,32 @@
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
+const USER = process.env.BASIC_AUTH_USER!;
+const PASS = process.env.BASIC_AUTH_PASS!;
+
 export function middleware(request: NextRequest) {
-  const ip = request.headers.get("x-forwarded-for")?.split(",")[0]?.trim() ?? "";
+  const auth = request.headers.get("authorization");
 
-  const allowedIps = (process.env.ALLOWED_IPS || "").split(",").map((ip) => ip.trim());
+  if (auth) {
+    const [scheme, encoded] = auth.split(" ");
+    if (scheme === "Basic") {
+      const decoded = atob(encoded);
+      const [user, pass] = decoded.split(":");
 
-  if (!allowedIps.includes(ip)) {
-    return new NextResponse("Access Denied", { status: 403 });
+      if (user === USER && pass === PASS) {
+        return NextResponse.next();
+      }
+    }
   }
 
-  return NextResponse.next();
+  return new NextResponse("Unauthorized", {
+    status: 401,
+    headers: {
+      "WWW-Authenticate": 'Basic realm="Restricted Area"',
+    },
+  });
 }
 
 export const config = {
-  matcher: ["/((?!_next|api|favicon.ico).*)"],
+  matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],
 };
