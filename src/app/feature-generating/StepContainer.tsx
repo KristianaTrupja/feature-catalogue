@@ -21,7 +21,7 @@ const steps = [
 export default function StepContainer() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const stepParam = searchParams.get("step");
+  const stepParam = searchParams?.get("step");
 
   const [currentStep, setCurrentStep] = useState(0);
   const [isStepValid, setIsStepValid] = useState(false);
